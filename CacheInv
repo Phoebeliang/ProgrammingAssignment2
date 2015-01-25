@@ -1,0 +1,43 @@
+#This function creates a special "Matrix" object. It generates a list of 4 functions:set,get,setinv and getinv
+
+
+
+makeCacheMatrix<- function(x = matrix()) {
+        invmat <- NULL  ##this is where the inversion of matrix will be stored
+        set <- function(y) {
+                x <<- y
+                invmat <<- NULL
+        }
+        get <- function() x
+        setinv <- function(inv) invmat <<-inv
+        getinv <- function() invmat
+        list(set = set, get = get,
+             setinv = setinv,
+             getinv = getinv)
+}
+
+
+#This function computes the inverse of the special "matrix" returned by makeCacheMatrix above. If already cached, this function will retrieve the cached inverse;otherwise, it will compute and cache it.
+cacheSolve <- function(x,...) {
+        m <- x$getinv()
+        if(!is.null(m)) {
+                message("getting cached data")
+                return(m)
+        }
+        data <- x$get()
+        m <- solve(data)
+        x$setinv(m)
+        m
+}
+
+ Test
+  # generate a random square, non-singular matrix
+    test <- matrix(runif(12,1,50),3,3)
+  # generate  makeCacheMatrix object with this matrix
+    testCache <- makeCacheMatrix(test)
+  # calculate or retrieve calculated inversion using the cacheSolve function
+
+  testInv <- cacheSolve(testCache)
+  testInv <- cacheSolve(testCache)
+  testInv <- cacheSolve(testCache)
+  
